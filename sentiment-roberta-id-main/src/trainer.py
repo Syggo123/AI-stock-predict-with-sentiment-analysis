@@ -36,8 +36,6 @@ class SentimentTrainer:
         self.training_args = TrainingArguments(
             output_dir=self.config.get("TrainingConfig", "output_dir"),
             overwrite_output_dir=self.config.getboolean("TrainingConfig", "overwrite_output_dir"),
-            evaluation_strategy=self.config.get("TrainingConfig", "evaluation_strategy"),
-            save_strategy=self.config.get("TrainingConfig", "save_strategy"),
             learning_rate=self.config.getfloat("TrainingConfig", "learning_rate"),
             per_device_train_batch_size=self.config.getint("TrainingConfig", "per_device_train_batch_size"),
             per_device_eval_batch_size=self.config.getint("TrainingConfig", "per_device_eval_batch_size"),
@@ -46,7 +44,6 @@ class SentimentTrainer:
             num_train_epochs=self.config.getint("TrainingConfig", "num_train_epochs"),
             metric_for_best_model=self.config.get("TrainingConfig", "metric_for_best_model"),
             greater_is_better=self.config.getboolean("TrainingConfig", "greater_is_better"),
-            load_best_model_at_end=self.config.getboolean("TrainingConfig", "load_best_model_at_end"),
             logging_steps=self.config.getint("TrainingConfig", "logging_steps"),
             weight_decay=self.config.getfloat("TrainingConfig", "weight_decay"),
             report_to=self.config.get("TrainingConfig", "report_to"),
@@ -116,6 +113,7 @@ class SentimentTrainer:
 
 
 if __name__ == "__main__":
-    trainer = SentimentTrainer("AI-stock-predict-with-sentiment-analysis/sentiment-roberta-id/src/config.conf")
+    trainer = SentimentTrainer("/content/AI-stock-predict-with-sentiment-analysis/sentiment-roberta-id-main/src/config.conf")
     trainer.train()
+    trainer.evaluate() 
     trainer.push_to_hub()
