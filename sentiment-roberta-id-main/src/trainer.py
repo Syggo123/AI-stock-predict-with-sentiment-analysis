@@ -19,8 +19,8 @@ class SentimentTrainer:
         notebook_login()
 
         self.dataset = load_dataset("csv", data_files={
-            "train": "sentiment-roberta-id/src/sent_train.csv",
-            "validation": "sentiment-roberta-id/src/sent_valid.csv"
+            "train": "AI-stock-predict-with-sentiment-analysis/sentiment-roberta-id/src/sent_train.csv",
+            "validation": "AI-stock-predict-with-sentiment-analysis/sentiment-roberta-id/src/sent_valid.csv"
         })
 
         self.model_name = "w11wo/indonesian-roberta-base-sentiment-classifier"
@@ -116,6 +116,6 @@ class SentimentTrainer:
 
 
 if __name__ == "__main__":
-    trainer = SentimentTrainer("sentiment-roberta-id/src/config.conf")
+    trainer = SentimentTrainer("AI-stock-predict-with-sentiment-analysis/sentiment-roberta-id/src/config.conf")
     trainer.train()
     trainer.push_to_hub()
