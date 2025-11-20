@@ -115,5 +115,5 @@ class SentimentTrainer:
 if __name__ == "__main__":
     trainer = SentimentTrainer("/content/AI-stock-predict-with-sentiment-analysis/sentiment-roberta-id-main/src/config.conf")
     trainer.train()
-    trainer.evaluate() 
+    trainer.trainer.evaluate() 
     trainer.push_to_hub()
