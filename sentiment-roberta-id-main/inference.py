@@ -1,12 +1,14 @@
 from transformers import pipeline, AutoTokenizer, AutoModelForSequenceClassification
 import torch
+import gradio as gr
 
 class SentimentAnalyzer:
-    def __init__(self, model_name, tokenizer):
+    def __init__(self, model_name):
+        self.tokenizer = AutoTokenizer.from_pretrained(model_name)
         self.model = AutoModelForSequenceClassification.from_pretrained(model_name)
-        self.tokenizer = tokenizer
-        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        self.model.to(self.device)
+
+        self.device = 0 if torch.cuda.is_available() else -1
+        
         self.pipeline = pipeline(
             "text-classification",
             model=self.model,
@@ -15,19 +17,27 @@ class SentimentAnalyzer:
         )
 
     def analyze_sentiment(self, text):
-        result = self.pipeline(text)
-        return result[0]
+        result = self.pipeline(text)[0]
+        label = result["label"]
+        score = round(result["score"], 4)
+        return f"{label}: {score}"
 
-if __name__ == "__main__":
-    model_name = "arifagustyawan/sentiment-roberta-id" # change to your model name if you have trained your own model
-    tokenizer = AutoTokenizer.from_pretrained(model_name)
-    
-    sentiment_analyzer = SentimentAnalyzer(model_name, tokenizer)
+# Load model
+model_name = "/content/results/sentiment-roberta-id"  # your trained model
+analyzer = SentimentAnalyzer(model_name)
 
-    while True:
-        text = input("Enter text for sentiment analysis (or 'exit' to quit): ")
-        if text.lower() == 'exit':
-            break
+# Gradio UI function
+def predict(text):
+    return analyzer.analyze_sentiment(text)
 
-        sentiment_result = sentiment_analyzer.analyze_sentiment(text)
-        print(f"Predicted Sentiment: {sentiment_result['label']} with confidence: {sentiment_result['score']}")
+# Build Gradio Interface
+ui = gr.Interface(
+    fn=predict,
+    inputs=gr.Textbox(lines=3, placeholder="Enter your text here..."),
+    outputs="text",
+    title="Sentiment Analysis",
+    description=""
+)
+
+ui.launch()
+  
